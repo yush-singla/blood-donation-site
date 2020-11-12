@@ -17,6 +17,9 @@ app.get("/signup",function(req,res){
 app.get("/aboutus",function(req,res){
   res.render("aboutus",{pageTitle:"about us"})
 })
+app.get("/donorlist",function(req,res){
+  res.render("donorlist0",{pageTitle:"donor list"});
+})
 
 app.listen(process.env.PORT||3000,function(){
   console.log("working on port 3000");
