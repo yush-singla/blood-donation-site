@@ -23,14 +23,25 @@
     <div class="container">
 
       <div class="row">
-        <% for (let i=0;i<8;i++){%> %>
+        <% for (let i=0;i<results.length;i++){%> %>
         <div class="col-md-6 col-lg-4">
           <div class="card mb-4 shadow-sm">
             <!-- place the images here if required add them in the donor list folder -->
             <img src="signinFiles/download.jpg" alt="">
             <!-- <svg class="bd-placeholder-img card-img-top" width="100%" height="225" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img" aria-label="Placeholder: Thumbnail"><title>Placeholder</title><rect width="100%" height="100%" fill="#55595c"/><text x="50%" y="50%" fill="#eceeef" dy=".3em">Thumbnail</text></svg> -->
             <div class="card-body">
-              <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+              <!-- <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p> -->
+              <ul>
+                <li> name: <%= results[i].name %></li>
+                <li> contactNo: <%= results[i].contactNo %></li>
+                <li> bloodGroup: <%= results[i].bloodGroup %></li>
+                <li> gender: <%= results[i].gender %></li>
+                <li> emailAdress: <%= results[i].emailAdress %></li>
+                <li> city: <%= results[i].city %></li>
+                <li> state: <%= results[i].state %></li>
+                <li> pin: <%= results[i].pin %></li>
+                <li> dateOfBirth: <%= results[i].dateOfBirth %></li>
+              </ul>
             </div>
           </div>
         </div>
