@@ -24,32 +24,68 @@ const donorSchema={
 //***************************this is the donor collection**************
 const Donor=mongoose.model("Donor",donorSchema);
 /*this is a sample object for donor list*/
-// const donor1=new Donor({
-//   name:"yush",
-//   contactNo:1234567890,
-//   bloodGroup:"b+",
-//   gender:1,
-//   emailAdress:"abc@xyz.com",
-//   city:"new delhi",
-//   state:"delhi",
-//   pin:110087,
-//   dateOfBirth:'2002-12-09'
-//
-// })
-// // donor1.save();
+/*
+const donor1=new Donor({
+  name:"yush",
+  contactNo:1234567890,
+  bloodGroup:"b+",
+  gender:1,
+  emailAdress:"abc@xyz.com",
+  city:"new delhi",
+  state:"delhi",
+  pin:110087,
+  dateOfBirth:'2002-12-09'
+
+})
+// donor1.save();*/
+
+//***********************this is the database for signin and signup info of people
+const signinSchema={
+  details:donorSchema,
+  email:String,
+  username:String,
+  password:String
+}
+
+
+const Person=mongoose.model("Person",signinSchema);
+
+
+
+
+
 app.set("view engine","ejs");
+
 app.use(express.static("public"));
+
+
+
+
 app.get("/",function(req,res){
   res.render("home",{pageTitle:"home page"});
 })
+
+
+
+
+
 app.get("/signin",function(req,res){
   res.render("signin",{pageTitle:"Sign In Page"});
 })
+
+
+
+
 app.get("/signup",function(req,res){
   res.render("signup");
 })
+
+
+
+
+
 app.post("/signup",function(req,res){
-  console.log(req.body.dob);
+  console.log(req.body.user_password);
   const ans=req.body;
   let sex;
   if(ans.department[1]==="Male"){
@@ -68,6 +104,20 @@ app.post("/signup",function(req,res){
     pin:ans.pin,
   });
   donorNew.save();
+  const newPerson=new Person({
+    details:donorNew,
+    email:ans.email,
+    username:ans.user_name,
+    password:ans.user_password,
+  });
+  newPerson.save();
+  Person.find({},function(err,results){
+    if(!err){
+      console.log("for new perdson");
+      console.log(results);
+    }
+  })
+
   res.send("success");
 })
 app.get("/aboutus",function(req,res){
@@ -76,7 +126,7 @@ app.get("/aboutus",function(req,res){
 app.get("/donorlist",function(req,res){
   Donor.find({},function(err,results){
     if(!err){
-      console.log(results[2]);
+      // console.log(results[2]);
       res.render("donorlist0",{pageTitle:"donor list",results:results});
     }
   })
