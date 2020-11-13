@@ -24,6 +24,8 @@
 <body>
 
   <%-include("partials/navbar")-%>
+
+  </div>
   <div class="container">
 
     <form class="well form-horizontal" action=" " method="post" id="contact_form">
@@ -38,7 +40,7 @@
           <div class="col-md-4 inputGroupContainer">
             <div class="input-group">
               <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-              <input name="first_name" placeholder="First Name" class="form-control" type="text">
+              <input name="first_name" placeholder="First Name" class="form-control" type="text" required>
             </div>
           </div>
         </div>
@@ -50,7 +52,7 @@
           <div class="col-md-4 inputGroupContainer">
             <div class="input-group">
               <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-              <input name="last_name" placeholder="Last Name" class="form-control" type="text">
+              <input name="last_name" placeholder="Last Name" class="form-control" type="text" required>
             </div>
           </div>
         </div>
@@ -60,7 +62,7 @@
           <div class="col-md-4 selectContainer">
             <div class="input-group">
               <span class="input-group-addon"><i class="glyphicon glyphicon-list"></i></span>
-              <select name="department" class="form-control selectpicker">
+              <select name="department" class="form-control selectpicker" required>
                 <option value="">Select your Blood Group</option>
                 <option>A+</option>
                 <option>A-</option>
@@ -79,7 +81,7 @@
    <div class="col-md-4 selectContainer">
     <div class="input-group">
        <span class="input-group-addon"><i class="glyphicon glyphicon-list"></i></span>
-      <select name="department" class="form-control selectpicker">
+      <select name="department" class="form-control selectpicker" required>
       <option value="">Select Your Gender</option>
       <option>Male</option>
       <option>Female</option>
@@ -93,7 +95,7 @@
     <div class="col-md-4 inputGroupContainer">
     <div class="input-group">
   <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-  <input name="dob" class="form-control" type="date">
+  <input name="dob" class="form-control" type="date" required>
     </div>
   </div>
 </div>
@@ -105,7 +107,7 @@
           <div class="col-md-4 inputGroupContainer">
             <div class="input-group">
               <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-              <input name="user_name" placeholder="Username" class="form-control" type="text">
+              <input name="user_name" placeholder="Username" class="form-control" type="text" required>
             </div>
           </div>
         </div>
@@ -118,7 +120,7 @@
           <div class="col-md-4 inputGroupContainer">
             <div class="input-group">
               <span class="input-group-addon"><i class="glyphicon glyphicon-envelope"></i></span>
-              <input name="email" placeholder="E-Mail Address" class="form-control" type="text">
+              <input name="email" placeholder="E-Mail Address" class="form-control" type="email" required>
             </div>
           </div>
         </div>
@@ -135,7 +137,7 @@
           <div class="col-md-4 inputGroupContainer">
             <div class="input-group">
               <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-              <input name="user_password" placeholder="Password" class="form-control" type="password">
+              <input name="user_password" placeholder="Password" class="form-control" type="password" required>
             </div>
           </div>
         </div>
@@ -147,7 +149,7 @@
           <div class="col-md-4 inputGroupContainer">
             <div class="input-group">
               <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-              <input name="confirm_password" placeholder="Confirm Password" class="form-control" type="password">
+              <input name="confirm_password" placeholder="Confirm Password" class="form-control" type="password" required>
             </div>
           </div>
         </div>
@@ -161,7 +163,7 @@
           <div class="col-md-4 inputGroupContainer">
             <div class="input-group">
               <span class="input-group-addon"><i class="glyphicon glyphicon-earphone"></i></span>
-              <input name="contact_no" placeholder="(+91)" class="form-control" type="text">
+              <input name="contact_no" placeholder="(+91)" class="form-control" type="text" required>
             </div>
           </div>
         </div>
@@ -181,7 +183,7 @@
           <div class="col-md-4 inputGroupContainer">
             <div class="input-group">
               <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-              <input name="state"  class="form-control" type="text" >
+              <input name="state"  class="form-control" type="text" required >
             </div>
           </div>
         </div>
@@ -195,7 +197,7 @@
           <div class="col-md-4 inputGroupContainer">
             <div class="input-group">
               <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-              <input name="city"  class="form-control" type="text">
+              <input name="city"  class="form-control" type="text" required>
             </div>
           </div>
         </div>
@@ -206,7 +208,7 @@
           <div class="col-md-4 inputGroupContainer">
             <div class="input-group">
               <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-              <input name="pin"  class="form-control" type="number">
+              <input name="pin"  class="form-control" type="number" required>
             </div>
           </div>
         </div>
