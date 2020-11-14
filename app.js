@@ -65,6 +65,22 @@ app.set("view engine", "ejs");
 app.use(express.static("public"));
 
 
+function getAge(dateString) {
+    var today = new Date();
+    var birthDate = new Date(dateString);
+    var age = today.getFullYear() - birthDate.getFullYear();
+    var m = today.getMonth() - birthDate.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+        age--;
+    }
+    return age;
+}
+
+
+
+
+
+
 
 
 app.get("/", function(req, res) {
@@ -191,17 +207,26 @@ console.log(check);
                   alert("phone no is already in use",valid);
                   res.redirect("/signup");
                 }
-
+                else if(valid===1&& ans.user_password.length<=5){
+                  valid =0;
+                  alert("password must be more than 5 characters");
+                  res.redirect("/signup");
+                }
                 else if (valid===1 && ans.user_password != ans.confirm_password) {
                   valid = 0;
                   alert("password and confirm password donot match plz try again",valid);
                   res.redirect("/signup");
                 }
-                // alert("now decision is valid is ",valid);
+                else if(valid===1 && getAge(ans.dob)<=12){
+                  valid=0;
+                  alert("you must be older than 12 sorry")
+                  res.redirect("/signup");
+                }
                 else if (valid===1&&(ans.pin/100000>=10||ans.pin/100000<1)) {
                   alert("pin is inalid sorry enter it again");
                   res.redirect("signup");
                 }
+
                 else {
 
                    let sex;

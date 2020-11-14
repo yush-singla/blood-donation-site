@@ -10,6 +10,20 @@
     #success_message {
       display: none;
     }
+    /* fieldset{
+      text-align: center;
+      font-size: 1.3rem;
+    }
+    fieldset input,label{
+      display: inline;
+      float: none;
+    }
+    .inputGroupContainer{
+      margin: auto;
+    }
+    .selectContainer{
+      margin: auto;
+    } */
     .signup{
       margin-left: 10px;
       padding-left: 23px;
@@ -22,8 +36,9 @@
 </head>
 
 <body>
-
-  <%-include("partials/navbar")-%>
+  <header>
+    <%-include("partials/navbar")-%>
+  </header>
 
   </div>
   <div class="container">
@@ -222,8 +237,8 @@
         <!-- Button -->
         <div class="form-group">
           <label class="col-md-4 control-label"></label>
-          <div class="col-md-4"><br>
-            &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<button type="submit" class="btn btn-primary">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbspSUBMIT <span
+          <div class="col-md-4 inputGroupContainer"><br>
+            &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<button type="submit" class="btn btn-primary ">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbspSUBMIT <span
                 class="glyphicon glyphicon-send"></span>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</button>
           </div>
         </div>
