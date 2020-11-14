@@ -84,6 +84,26 @@ app.get("/signin", function(req, res) {
 })
 
 
+app.post("/signin",function(req,res){
+  const ans=req.body;
+  console.log(ans);
+  Person.findOne({email:ans.email},function(err,results){
+    console.log(results);
+    if(!results){
+      console.log("your email is nt registered with us ");
+      res.send("email not there");
+    }
+    else if(results.password!=ans.password){
+        console.log("you have enetered a wrong password");
+        res.send("password is wrong");
+    }
+    else{
+      res.redirect("/donorreceiverpage");
+    }
+  });
+});
+
+
 
 
 app.get("/signup", function(req, res) {
@@ -228,6 +248,16 @@ console.log(check);
 app.get("/aaa",function(req,res){
   res.render("signinAfterSignupPage", {
     pageTitle: "Sign In Page"
+  });
+});
+// app.get("/aa",function(req,res){
+//   res.render("donorReceiverPage",{
+//     pageTitle:"welcome"
+//   });
+// });
+app.get("/donorreceiverpage",function(req,res){
+  res.render("donorReceiverPage",{
+    pageTitle:"welcome"
   });
 });
 app.get("/aboutus", function(req, res) {
