@@ -1,6 +1,21 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const app = express();
+//twilio info in 3 lines from here
+const accountSid ="ACa700ade885e1e8d83ad9953fb1c35c7b" ;
+const authToken = "7607a54c5431e95518f93c42a0588c4c";
+const client = require('twilio')(accountSid, authToken);
+
+//nodemailer info is here
+var nodemailer = require('nodemailer');
+var transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: 'yushsingla@gmail.com',
+    pass: 'yushajay1'
+  }
+});
+
 
 const ejs = require('ejs');
 const mongoose = require("mongoose");
@@ -52,9 +67,19 @@ const signinSchema = {
   username: String,
   password: String
 }
-
-
 const Person = mongoose.model("Person", signinSchema);
+
+
+//*****************this is the otp schema for verifying otp***********
+const otpSchema={
+  phoneNo:Number,
+  otpPhone:Number,
+  email:String,
+  otpEmail:Number
+}
+
+
+const Otp=mongoose.model("otp",otpSchema);
 
 
 
@@ -228,6 +253,70 @@ console.log(check);
                 }
 
                 else {
+                   let sex;
+                   if (ans.department[1] === "Male") {
+                     sex = true;
+                   } else sex = false;
+
+                   //**********getting all the info from the user to be fed to the database after verifying*****
+                   const donorNew = new Donor({
+                     name: ans.first_name + " " + ans.last_name,
+                     contactNo: ans.contact_no,
+                     bloodGroup: ans.department[0],
+                     gender: sex,
+                     dateOfBirth: ans.dob,
+                     emailAdress: ans.email,
+                     city: ans.city,
+                     state: ans.state,
+                     pin: ans.pin,
+                   });
+                   donorNew.save();
+                   const newPerson = new Person({
+                     details: donorNew,
+                     email: ans.email,
+                     username: ans.user_name,
+                     password: ans.user_password,
+                   });
+                   newPerson.save();
+                   const randOtp1=Math.floor(1000 + Math.random() * 9000);
+
+                  client.messages
+                    .create({
+                       body: 'your otp is'+randOtp1,
+                       from: '+19378216745',
+                       to: '+91'+ans.contact_no
+                     })
+                    .then(message => console.log(message.sid));
+
+                    const randotp2=Math.floor(1000 + Math.random() * 9000);
+
+                    var mailOptions = {
+                      from: 'yushsingla@gmail.com',
+                      to: ans.email,
+                      subject: 'We have your otp for verification',
+                      text: 'your Otp is '+randotp2
+                    };
+
+                    transporter.sendMail(mailOptions, function(error, info){
+                      if (error) {
+                        console.log(error);
+                      } else {
+                        console.log('Email sent: ' + info.response);
+                      }
+                    });
+
+                    const newOtp=new Otp({
+                      phoneNo:ans.contact_no,
+                      otpPhone:randOtp1,
+                      email:ans.email,
+                      otpEmail:randotp2
+                    });
+                    newOtp.save();
+
+                   res.redirect("/otp");
+                 }
+                /*
+                else {
 
                    let sex;
                    if (ans.department[1] === "Male") {
@@ -259,6 +348,7 @@ console.log(check);
                      pageTitle: "Sign In Page"
                    });
                  }
+                 */
               });
 
             }
@@ -269,7 +359,60 @@ console.log(check);
   }
 
 
+
+
 })
+
+
+
+
+
+
+
+
+app.get("/otp",function(req,res){
+  res.render("otp",{pageTitle: "Otp verification"})
+});
+
+app.post("/otp",function(req,res){
+  const ans=req.body;
+  const mobileNo=ans.mobileNo;
+  const email=ans.email;
+  console.log(ans.mobotp,ans.emailotp);
+  Otp.findOne({phoneNo:mobileNo,email:email},function(err,result){
+    if(result){
+      console.log(result.otpEmail,result.otpPhone);
+      if(ans.mobotp==result.otpPhone && ans.emailotp==result.otpEmail){
+        Otp.findOneAndRemove({phoneNo:mobileNo},function(err){
+          console.log(err);
+          res.render("signinAfterSignupPage",{pageTitle:"welcome"});
+        });
+      }
+      else{
+        Person.findOneAndRemove({email:email},function(err){
+          if(!err){
+            Donor.findOneAndRemove({contactNo:mobileNo},function(err){
+              if(!err){
+                res.send("otp is not valid");
+              }
+            });
+          }
+        });
+      }
+    }
+  });
+});
+
+
+
+
+
+
+
+
+
+
+
 app.get("/aaa",function(req,res){
   res.render("signinAfterSignupPage", {
     pageTitle: "Sign In Page"
@@ -281,9 +424,11 @@ app.get("/aaa",function(req,res){
 //   });
 // });
 app.get("/donorreceiverpage",function(req,res){
-  res.render("donorReceiverPage",{
-    pageTitle:"welcome"
-  });
+  Otp.deleteMany({},function(err){
+    res.render("donorReceiverPage",{
+      pageTitle:"welcome"
+    });
+  })
 });
 app.get("/aboutus", function(req, res) {
   res.render("aboutus", {
