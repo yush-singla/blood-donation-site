@@ -2,8 +2,8 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const app = express();
 //twilio info in 3 lines from here
-const accountSid ="ACa700ade885e1e8d83ad9953fb1c35c7b" ;
-const authToken = "7607a54c5431e95518f93c42a0588c4c";
+const accountSid ="" ;
+const authToken = "";
 const client = require('twilio')(accountSid, authToken);
 
 //nodemailer info is here
@@ -11,8 +11,8 @@ var nodemailer = require('nodemailer');
 var transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
-    user: 'yushsingla@gmail.com',
-    pass: 'yushajay1'
+    user: '@gmail.com',
+    pass: ''
   }
 });
 
@@ -291,7 +291,7 @@ console.log(check);
                     const randotp2=Math.floor(1000 + Math.random() * 9000);
 
                     var mailOptions = {
-                      from: 'yushsingla@gmail.com',
+                      from: '@gmail.com',
                       to: ans.email,
                       subject: 'We have your otp for verification',
                       text: 'your Otp is '+randotp2
