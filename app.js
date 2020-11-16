@@ -20,7 +20,7 @@ var transporter = nodemailer.createTransport({
 const ejs = require('ejs');
 const mongoose = require("mongoose");
 const alert = require('alert');
-mongoose.connect("mongodb+srv://admin-yush:yushajay1@cluster0.x2h7y.mongodb.net/donorsDB", {
+mongoose.connect("mongodb://localhost:27017/donorsDB", {
   useNewUrlParser: true,
   useUnifiedTopology: true
 });
@@ -145,10 +145,11 @@ app.post("/signin",function(req,res){
 });
 
 
-app.get("/delete",function(req,res){
-  Person.deleteMany({},function(err){
-    Donor.deleteMany({},function(err){
-      Otp.deleteMany({},function(err){
+app.get("/delete/:email",function(req,res){
+  const email=req.params.email;
+  Person.findOneAndRemove({email:email},function(err){
+    Donor.findOneAndRemove({emailAdress:email},function(err){
+      Otp.findOneAndRemove({email:email},function(err){
         res.send("wiped out everything");
       })
     })
