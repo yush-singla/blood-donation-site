@@ -2,8 +2,8 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const app = express();
 //twilio info in 3 lines from here
-const accountSid ="" ;
-const authToken = "";
+const accountSid =process.env.TWILIO_ACCOUNT_SID;
+const authToken = process.env.TWILIO_AUTH_TOKEN;
 const client = require('twilio')(accountSid, authToken);
 
 //nodemailer info is here
@@ -11,8 +11,8 @@ var nodemailer = require('nodemailer');
 var transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
-    user: '@gmail.com',
-    pass: ''
+    user: 'bloodforyou5@gmail.com',
+    pass: "aprsy@12345"
   }
 });
 
@@ -20,7 +20,7 @@ var transporter = nodemailer.createTransport({
 const ejs = require('ejs');
 const mongoose = require("mongoose");
 const alert = require('alert');
-mongoose.connect("mongodb://localhost:27017/donorsDB", {
+mongoose.connect("mongodb+srv://admin-yush:yushajay1@cluster0.x2h7y.mongodb.net/donorsDB", {
   useNewUrlParser: true,
   useUnifiedTopology: true
 });
@@ -144,6 +144,16 @@ app.post("/signin",function(req,res){
   });
 });
 
+
+app.get("/delete",function(req,res){
+  Person.deleteMany({},function(err){
+    Donor.deleteMany({},function(err){
+      Otp.deleteMany({},function(err){
+        res.send("wiped out everything");
+      })
+    })
+  })
+})
 
 
 
@@ -291,7 +301,7 @@ console.log(check);
                     const randotp2=Math.floor(1000 + Math.random() * 9000);
 
                     var mailOptions = {
-                      from: '@gmail.com',
+                      from: 'bloodforyou5@gmail.com',
                       to: ans.email,
                       subject: 'We have your otp for verification',
                       text: 'your Otp is '+randotp2
@@ -448,6 +458,4 @@ app.get("/donorlist", function(req, res) {
 
 app.listen(process.env.PORT || 3000, function() {
   console.log("working on port 3000");
-  var datetime = new Date();
-
 });
