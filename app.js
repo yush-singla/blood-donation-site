@@ -5,7 +5,7 @@ const app = express();
 //twilio info in 3 lines from here
 const accountSid = process.env.TWILIO_ACCOUNT_SID;
 const authToken = process.env.TWILIO_AUTH_TOKEN;
-// const client = require("twilio")(accountSid, authToken);
+const client = require("twilio")(accountSid, authToken);
 
 //nodemailer info is here
 var nodemailer = require("nodemailer");
@@ -20,10 +20,13 @@ var transporter = nodemailer.createTransport({
 const ejs = require("ejs");
 const mongoose = require("mongoose");
 const alert = require("alert");
-mongoose.connect("mongodb://localhost:27017/NewDB", {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
+mongoose.connect(
+  "mongodb+srv://admin-yush:yushajay1@cluster0.x2h7y.mongodb.net/donorsDB?retryWrites=true&w=majority",
+  {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  }
+);
 
 app.use(
   bodyParser.urlencoded({
