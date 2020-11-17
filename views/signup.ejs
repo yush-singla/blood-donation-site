@@ -5,11 +5,13 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Document</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css"
+    integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
   <style>
     #success_message {
       display: none;
     }
+
     /* fieldset{
       text-align: center;
       font-size: 1.3rem;
@@ -24,12 +26,13 @@
     .selectContainer{
       margin: auto;
     } */
-    .signup{
+    .signup {
       margin-left: 10px;
       padding-left: 23px;
       padding-right: 23px;
     }
-    .heading{
+
+    .heading {
       margin-top: 8%;
     }
   </style>
@@ -46,7 +49,8 @@
     <form class="well form-horizontal" action="/signup" method="post" id="contact_form">
       <fieldset>
 
-        <h2 class="heading "></col>Registration Form</h2>
+        <h2 class="heading ">
+          </col>Registration Form</h2>
 
         <!-- Text input-->
 
@@ -92,28 +96,28 @@
           </div>
         </div>
         <div class="form-group">
-  <label class="col-md-4 control-label">Gender</label>
-   <div class="col-md-4 selectContainer">
-    <div class="input-group">
-       <span class="input-group-addon"><i class="glyphicon glyphicon-list"></i></span>
-      <select name="department" class="form-control selectpicker" required>
-      <option value="">Select Your Gender</option>
-      <option>Male</option>
-      <option>Female</option>
-      <option >Other</option>
-      </select>
-      </div>
-</div>
-</div>
-<div class="form-group">
-  <label class="col-md-4 control-label" >Date of Birth</label>
-    <div class="col-md-4 inputGroupContainer">
-    <div class="input-group">
-  <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-  <input name="dob" class="form-control" type="date" required>
-    </div>
-  </div>
-</div>
+          <label class="col-md-4 control-label">Gender</label>
+          <div class="col-md-4 selectContainer">
+            <div class="input-group">
+              <span class="input-group-addon"><i class="glyphicon glyphicon-list"></i></span>
+              <select name="department" class="form-control selectpicker" required>
+                <option value="">Select Your Gender</option>
+                <option>Male</option>
+                <option>Female</option>
+                <option>Other</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-md-4 control-label">Date of Birth</label>
+          <div class="col-md-4 inputGroupContainer">
+            <div class="input-group">
+              <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+              <input name="dob" class="form-control" type="date" required>
+            </div>
+          </div>
+        </div>
 
         <!-- Text input-->
 
@@ -129,7 +133,7 @@
 
 
 
-       <!-- Text input-->
+        <!-- Text input-->
         <div class="form-group">
           <label class="col-md-4 control-label">E-Mail</label>
           <div class="col-md-4 inputGroupContainer">
@@ -152,7 +156,8 @@
           <div class="col-md-4 inputGroupContainer">
             <div class="input-group">
               <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-              <input name="user_password" placeholder="Password" class="form-control" type="password" required>
+              <input name="user_password" placeholder="Password" class="form-control" id="password" type="password"
+                required>
             </div>
           </div>
         </div>
@@ -164,11 +169,24 @@
           <div class="col-md-4 inputGroupContainer">
             <div class="input-group">
               <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-              <input name="confirm_password" placeholder="Confirm Password" class="form-control" type="password" required>
+              <input name="confirm_password" placeholder="Confirm Password" id="confirmPassword" class="form-control"
+                type="password" required>
             </div>
           </div>
+          <p id="message"></p>
         </div>
-
+        <script>
+          var check = function () {
+            if (document.getElementById('password').value ==
+              document.getElementById('confirmPassword').value) {
+              document.getElementById('message').style.color = 'green';
+              document.getElementById('message').innerHTML = '';
+            } else {
+              document.getElementById('message').style.color = 'red';
+              document.getElementById('message').innerHTML = 'Passwords do not match';
+            }
+          }
+        </script>
 
 
         <!-- Text input-->
@@ -183,7 +201,7 @@
           </div>
         </div>
 
-           <div class="form-group">
+        <div class="form-group">
           <label class="col-md-4 control-label">Country</label>
           <div class="col-md-4 inputGroupContainer">
             <div class="input-group">
@@ -193,12 +211,34 @@
           </div>
         </div>
 
-   <div class="form-group">
+        <script>
+          var citiesByState = {
+            Delhi: ["New Delhi", "West Delhi", "South Delhi"],
+            UttarPradesh: ["Noida", "Greater Noida", "Lucknow"]
+          }
+          function makeMenu(value) {
+            if (value.length == 0) document.getElementById("citySelect").innerHTML = "<option></option>";
+            else {
+              var citiesOptions = "";
+              for (cityId in citiesByState[value]) {
+                citiesOptions += "<option>" + citiesByState[value][cityId] + "</option>";
+              }
+              document.getElementById("citySelect").innerHTML = citiesOptions;
+            }
+          }
+        </script>
+
+        <div class="form-group">
           <label class="col-md-4 control-label">State</label>
           <div class="col-md-4 inputGroupContainer">
             <div class="input-group">
               <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-              <input name="state"  class="form-control" type="text" required >
+              <!-- <input name="state" class="form-control" type="text" required> -->
+              <select name="state" class="form-control selectpicker" id="" required onchange="makeMenu(this.value)">
+                <option value="" disabled selected>Choose State</option>
+                <option value="">Delhi</option>
+                <option value="">UttarPradesh</option>
+              </select>
             </div>
           </div>
         </div>
@@ -212,7 +252,11 @@
           <div class="col-md-4 inputGroupContainer">
             <div class="input-group">
               <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-              <input name="city"  class="form-control" type="text" required>
+              <!-- <input name="city" class="form-control" type="text" required> -->
+              <select name="city" class="form-control selectpicker" id="citySelect" required>
+                <option value="" disabled selected>Choose City</option>
+              </select>
+
             </div>
           </div>
         </div>
@@ -223,7 +267,7 @@
           <div class="col-md-4 inputGroupContainer">
             <div class="input-group">
               <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-              <input name="pin"  class="form-control" type="number" required>
+              <input name="pin" class="form-control" type="number" required>
             </div>
           </div>
         </div>
@@ -232,13 +276,15 @@
         <!-- Select Basic -->
 
         <!-- Success message -->
-        <div class="alert alert-success" role="alert" id="success_message">Success <i class="glyphicon glyphicon-thumbs-up"></i> Success!.</div>
+        <div class="alert alert-success" role="alert" id="success_message">Success <i
+            class="glyphicon glyphicon-thumbs-up"></i> Success!.</div>
 
         <!-- Button -->
         <div class="form-group">
           <label class="col-md-4 control-label"></label>
           <div class="col-md-4 inputGroupContainer"><br>
-            &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<button type="submit" class="btn btn-primary ">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbspSUBMIT <span
+            &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<button type="submit"
+              class="btn btn-primary ">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbspSUBMIT <span
                 class="glyphicon glyphicon-send"></span>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</button>
           </div>
         </div>
@@ -254,4 +300,4 @@
 
 
   </div><!-- /.container -->
-<%-include("partials/footer")-%>
+  <%-include("partials/footer")-%>
