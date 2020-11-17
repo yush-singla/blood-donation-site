@@ -213,19 +213,20 @@
 
         <script>
           var citiesByState = {
-            Delhi: ["New Delhi", "West Delhi", "South Delhi"],
-            UttarPradesh: ["Noida", "Greater Noida", "Lucknow"]
-          }
+            "Delhi": ["New Delhi", "West Delhi", "South Delhi"],
+            "UttarPradesh": ["Noida", "Greater Noida", "Lucknow"]
+          };
+          var citiesOptions = "";
           function makeMenu(value) {
             if (value.length == 0) document.getElementById("citySelect").innerHTML = "<option></option>";
             else {
-              var citiesOptions = "";
-              for (cityId in citiesByState[value]) {
-                citiesOptions += "<option>" + citiesByState[value][cityId] + "</option>";
+              for (var i = 0; i < 3; i++) {
+
+                citiesOptions += "<option>" + citiesByState[value][i] + "</option>";
               }
               document.getElementById("citySelect").innerHTML = citiesOptions;
+
             }
-          }
         </script>
 
         <div class="form-group">
@@ -236,8 +237,8 @@
               <!-- <input name="state" class="form-control" type="text" required> -->
               <select name="state" class="form-control selectpicker" id="" required onchange="makeMenu(this.value)">
                 <option value="" disabled selected>Choose State</option>
-                <option value="">Delhi</option>
-                <option value="">UttarPradesh</option>
+                <option value="Delhi">Delhi</option>
+                <option value="UttarPradesh">UttarPradesh</option>
               </select>
             </div>
           </div>
