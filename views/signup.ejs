@@ -59,7 +59,7 @@
           <div class="col-md-4 inputGroupContainer">
             <div class="input-group">
               <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-              <input name="first_name" placeholder="First Name" class="form-control" type="text" required>
+              <input name="first_name" pattern="[A-Za-z]{1,20}"placeholder="First Name" class="form-control" type="text" required>
             </div>
           </div>
         </div>
@@ -71,7 +71,7 @@
           <div class="col-md-4 inputGroupContainer">
             <div class="input-group">
               <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-              <input name="last_name" placeholder="Last Name" class="form-control" type="text" required>
+              <input name="last_name" placeholder="Last Name" pattern="[A-Za-z]{1,20}" class="form-control" type="text" required>
             </div>
           </div>
         </div>
@@ -81,7 +81,7 @@
           <div class="col-md-4 selectContainer">
             <div class="input-group">
               <span class="input-group-addon"><i class="glyphicon glyphicon-list"></i></span>
-              <select name="department" class="form-control selectpicker" required>
+              <select name="bloodGroup" class="form-control selectpicker" required>
                 <option value="">Select your Blood Group</option>
                 <option>A+</option>
                 <option>A-</option>
@@ -100,11 +100,10 @@
           <div class="col-md-4 selectContainer">
             <div class="input-group">
               <span class="input-group-addon"><i class="glyphicon glyphicon-list"></i></span>
-              <select name="department" class="form-control selectpicker" required>
+              <select name="gender" class="form-control selectpicker" required>
                 <option value="">Select Your Gender</option>
                 <option>Male</option>
                 <option>Female</option>
-                <option>Other</option>
               </select>
             </div>
           </div>
@@ -114,7 +113,7 @@
           <div class="col-md-4 inputGroupContainer">
             <div class="input-group">
               <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-              <input name="dob" class="form-control" type="date" required>
+              <input name="dob" class="form-control" type="date" required max="2002-01-01">
             </div>
           </div>
         </div>
@@ -195,7 +194,7 @@
           <div class="col-md-4 inputGroupContainer">
             <div class="input-group">
               <span class="input-group-addon"><i class="glyphicon glyphicon-earphone"></i></span>
-              <input name="contact_no" placeholder="(+91)" class="form-control" type="text" required>
+              <input name="contact_no" placeholder="(+91)" class="form-control" type="tel" pattern="[6-9]{1}[0-9]{9}" required>
             </div>
           </div>
         </div>
@@ -267,7 +266,7 @@
           <div class="col-md-4 inputGroupContainer">
             <div class="input-group">
               <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-              <input name="pin" class="form-control" type="number" required>
+              <input name="pin" pattern="[0-9]{6}" class="form-control" type="number" required>
             </div>
           </div>
         </div>

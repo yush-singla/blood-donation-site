@@ -5,7 +5,7 @@ const app = express();
 //twilio info in 3 lines from here
 const accountSid = process.env.TWILIO_ACCOUNT_SID;
 const authToken = process.env.TWILIO_AUTH_TOKEN;
-const client = require("twilio")(accountSid, authToken);
+// const client = require("twilio")(accountSid, authToken);
 
 //nodemailer info is here
 var nodemailer = require("nodemailer");
@@ -20,13 +20,10 @@ var transporter = nodemailer.createTransport({
 const ejs = require("ejs");
 const mongoose = require("mongoose");
 const alert = require("alert");
-mongoose.connect(
-  "mongodb+srv://admin-yush:yushajay1@cluster0.x2h7y.mongodb.net/donorsDB?retryWrites=true&w=majority",
-  {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  }
-);
+mongoose.connect("mongodb://localhost:27017/NewDb", {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
 
 app.use(
   bodyParser.urlencoded({
@@ -38,7 +35,7 @@ const donorSchema = {
   name: String,
   contactNo: Number,
   bloodGroup: String,
-  gender: Boolean,
+  gender: String,
   emailAdress: String,
   city: String,
   state: String,
@@ -146,6 +143,7 @@ app.get("/signup", function (req, res) {
 var check = 1;
 app.post("/signup", function (req, res) {
   const ans = req.body;
+  console.log(ans);
   //********verifying data for duplicacy and genuinity****************
   /*
   //1. phone no is 10 digits
@@ -194,14 +192,7 @@ console.log(check);
     res.redirect("/signup");
   }*/
   var valid = 1;
-  if (
-    valid === 1 &&
-    (ans.contact_no / 1000000000 >= 10 || ans.contact_no / 1000000000 < 1)
-  ) {
-    valid = 0;
-    alert("Invalid phone no! Plz fill it correctly", valid);
-    res.redirect("/signup");
-  }
+
   if (valid == 1) {
     Person.findOne({ username: ans.user_name }, function (err, results) {
       if (results) {
@@ -226,42 +217,24 @@ console.log(check);
                 valid = 0;
                 alert("phone no is already in use", valid);
                 res.redirect("/signup");
-              } else if (valid === 1 && ans.user_password.length <= 5) {
-                valid = 0;
-                alert("password must be more than 5 characters");
-                res.redirect("/signup");
-              } else if (
-                valid === 1 &&
-                ans.user_password != ans.confirm_password
-              ) {
-                valid = 0;
-                alert(
-                  "password and confirm password donot match plz try again",
-                  valid
-                );
-                res.redirect("/signup");
               } else if (valid === 1 && getAge(ans.dob) <= 12) {
                 valid = 0;
                 alert("you must be older than 12 sorry");
                 res.redirect("/signup");
               } else if (
                 valid === 1 &&
-                (ans.pin / 100000 >= 10 || ans.pin / 100000 < 1)
+                ans.user_password != ans.confirm_password
               ) {
-                alert("pin is inalid sorry enter it again");
-                res.redirect("signup");
+                valid = 0;
+                alert("passwords dont match");
+                res.redirect("/signup");
               } else {
-                let sex;
-                if (ans.department[1] === "Male") {
-                  sex = true;
-                } else sex = false;
-
                 //**********getting all the info from the user to be fed to the database after verifying*****
                 const donorNew = new Donor({
                   name: ans.first_name + " " + ans.last_name,
                   contactNo: ans.contact_no,
-                  bloodGroup: ans.department[0],
-                  gender: sex,
+                  bloodGroup: ans.bloodGroup,
+                  gender: ans.gender,
                   dateOfBirth: ans.dob,
                   emailAdress: ans.email,
                   city: ans.city,
@@ -276,43 +249,44 @@ console.log(check);
                   password: ans.user_password,
                 });
                 newPerson.save();
-                const randOtp1 = Math.floor(1000 + Math.random() * 9000);
+                // const randOtp1 = Math.floor(1000 + Math.random() * 9000);
 
-                client.messages
-                  .create({
-                    body: "your otp is" + randOtp1,
-                    from: "+19378216745",
-                    to: "+91" + ans.contact_no,
-                  })
-                  .then((message) => console.log(message.sid));
+                //   client.messages
+                //     .create({
+                //       body: "your otp is" + randOtp1,
+                //       from: "+19378216745",
+                //       to: "+91" + ans.contact_no,
+                //     })
+                //     .then((message) => console.log(message.sid));
 
-                const randotp2 = Math.floor(1000 + Math.random() * 9000);
+                //   const randotp2 = Math.floor(1000 + Math.random() * 9000);
 
-                var mailOptions = {
-                  from: "bloodforyou5@gmail.com",
-                  to: ans.email,
-                  subject: "We have your otp for verification",
-                  text: "your Otp is " + randotp2,
-                };
+                //   var mailOptions = {
+                //     from: "bloodforyou5@gmail.com",
+                //     to: ans.email,
+                //     subject: "We have your otp for verification",
+                //     text: "your Otp is " + randotp2,
+                //   };
 
-                transporter.sendMail(mailOptions, function (error, info) {
-                  if (error) {
-                    console.log(error);
-                  } else {
-                    console.log("Email sent: " + info.response);
-                  }
-                });
+                //   transporter.sendMail(mailOptions, function (error, info) {
+                //     if (error) {
+                //       console.log(error);
+                //     } else {
+                //       console.log("Email sent: " + info.response);
+                //     }
+                //   });
 
-                const newOtp = new Otp({
-                  phoneNo: ans.contact_no,
-                  otpPhone: randOtp1,
-                  email: ans.email,
-                  otpEmail: randotp2,
-                });
-                newOtp.save();
+                //   const newOtp = new Otp({
+                //     phoneNo: ans.contact_no,
+                //     otpPhone: randOtp1,
+                //     email: ans.email,
+                //     otpEmail: randotp2,
+                //   });
+                //   newOtp.save();
 
-                res.redirect("/otp");
+                //   res.redirect("/otp");
               }
+              res.redirect("/aaa");
               /*
                 else {
 
@@ -355,37 +329,37 @@ console.log(check);
   }
 });
 
-app.get("/otp", function (req, res) {
-  res.render("otp", { pageTitle: "Otp verification" });
-});
+// app.get("/otp", function (req, res) {
+//   res.render("otp", { pageTitle: "Otp verification" });
+// });
 
-app.post("/otp", function (req, res) {
-  const ans = req.body;
-  const mobileNo = ans.mobileNo;
-  const email = ans.email;
-  console.log(ans.mobotp, ans.emailotp);
-  Otp.findOne({ phoneNo: mobileNo, email: email }, function (err, result) {
-    if (result) {
-      console.log(result.otpEmail, result.otpPhone);
-      if (ans.mobotp == result.otpPhone && ans.emailotp == result.otpEmail) {
-        Otp.findOneAndRemove({ phoneNo: mobileNo }, function (err) {
-          console.log(err);
-          res.render("signinAfterSignupPage", { pageTitle: "welcome" });
-        });
-      } else {
-        Person.findOneAndRemove({ email: email }, function (err) {
-          if (!err) {
-            Donor.findOneAndRemove({ contactNo: mobileNo }, function (err) {
-              if (!err) {
-                res.send("otp is not valid");
-              }
-            });
-          }
-        });
-      }
-    }
-  });
-});
+// app.post("/otp", function (req, res) {
+//   const ans = req.body;
+//   const mobileNo = ans.mobileNo;
+//   const email = ans.email;
+//   console.log(ans.mobotp, ans.emailotp);
+//   Otp.findOne({ phoneNo: mobileNo, email: email }, function (err, result) {
+//     if (result) {
+//       console.log(result.otpEmail, result.otpPhone);
+//       if (ans.mobotp == result.otpPhone && ans.emailotp == result.otpEmail) {
+//         Otp.findOneAndRemove({ phoneNo: mobileNo }, function (err) {
+//           console.log(err);
+//           res.render("signinAfterSignupPage", { pageTitle: "welcome" });
+//         });
+//       } else {
+//         Person.findOneAndRemove({ email: email }, function (err) {
+//           if (!err) {
+//             Donor.findOneAndRemove({ contactNo: mobileNo }, function (err) {
+//               if (!err) {
+//                 res.send("otp is not valid");
+//               }
+//             });
+//           }
+//         });
+//       }
+//     }
+//   });
+// });
 
 app.get("/aaa", function (req, res) {
   res.render("signinAfterSignupPage", {
