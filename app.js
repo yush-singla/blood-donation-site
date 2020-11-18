@@ -2,24 +2,26 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const app = express();
-//twilio info in 3 lines from here
-const accountSid = process.env.TWILIO_ACCOUNT_SID;
-const authToken = process.env.TWILIO_AUTH_TOKEN;
-// const client = require("twilio")(accountSid, authToken);
-
-//nodemailer info is here
-var nodemailer = require("nodemailer");
-var transporter = nodemailer.createTransport({
-  service: "gmail",
-  auth: {
-    user: "bloodforyou5@gmail.com",
-    pass: "aprsy@12345",
-  },
-});
-
 const ejs = require("ejs");
 const mongoose = require("mongoose");
 const alert = require("alert");
+//twilio info in 3 lines from here
+// const accountSid = process.env.TWILIO_ACCOUNT_SID;
+// const authToken = process.env.TWILIO_AUTH_TOKEN;
+// const client = require("twilio")(accountSid, authToken);
+
+//nodemailer info is here
+// var nodemailer = require("nodemailer");
+// var transporter = nodemailer.createTransport({
+//   service: "gmail",
+//   auth: {
+//     user: "bloodforyou5@gmail.com",
+//     pass: "aprsy@12345",
+//   },
+// });
+app.set("view engine", "ejs");
+app.use(express.static("public"));
+
 mongoose.connect("mongodb://localhost:27017/NewDb", {
   useNewUrlParser: true,
   useUnifiedTopology: true,
@@ -31,21 +33,50 @@ app.use(
   })
 );
 //*******************donor list schema is here below*********************************
-const donorSchema = {
+const userSchema = {
   name: String,
-  contactNo: Number,
   bloodGroup: String,
   gender: String,
-  emailAdress: String,
-  city: String,
-  state: String,
-  pin: Number,
   dateOfBirth: Date,
+  username: String,
+  emailAddress: String,
+  password: String,
+  contactNumber: Number,
+  state: String,
+  city: String,
+  pin: Number,
 };
+const User = mongoose.model("User", userSchema);
+const donorSchema = {
+  details: userSchema,
+};
+const Donor = mongoose.model("Donor", donorSchema);
+const receiverSchema = {
+  details: userSchema,
+};
+const Receiver = mongoose.model("Receiver", receiverSchema);
+const otpSchema = {
+  phoneNo: Number,
+  otpPhone: Number,
+  email: String,
+  otpEmail: Number,
+};
+const Otp = mongoose.model("otp", otpSchema);
+
+function getAge(dateString) {
+  var today = new Date();
+  var birthDate = new Date(dateString);
+  var age = today.getFullYear() - birthDate.getFullYear();
+  var m = today.getMonth() - birthDate.getMonth();
+  if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+    age--;
+  }
+  return age;
+}
+
 //**********************************************************************
 
 //***************************this is the donor collection**************
-const Donor = mongoose.model("Donor", donorSchema);
 /*this is a sample object for donor list*/
 /*
 const donor1=new Donor({
@@ -62,85 +93,106 @@ const donor1=new Donor({
 })
 // donor1.save();*/
 
-//***********************this is the database for signin and signup info of people
-const signinSchema = {
-  details: donorSchema,
-  email: String,
-  username: String,
-  password: String,
-};
-const Person = mongoose.model("Person", signinSchema);
-
-//*****************this is the otp schema for verifying otp***********
-const otpSchema = {
-  phoneNo: Number,
-  otpPhone: Number,
-  email: String,
-  otpEmail: Number,
-};
-
-const Otp = mongoose.model("otp", otpSchema);
-
-app.set("view engine", "ejs");
-
-app.use(express.static("public"));
-
-function getAge(dateString) {
-  var today = new Date();
-  var birthDate = new Date(dateString);
-  var age = today.getFullYear() - birthDate.getFullYear();
-  var m = today.getMonth() - birthDate.getMonth();
-  if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
-    age--;
-  }
-  return age;
-}
-
+// GET Request
+// Home
 app.get("/", function (req, res) {
   res.render("home", {
     pageTitle: "home page",
   });
 });
 
+// Sign-in
 app.get("/signin", function (req, res) {
   res.render("signin", {
     pageTitle: "Sign In Page",
   });
 });
 
-app.post("/signin", function (req, res) {
-  const ans = req.body;
-  console.log(ans);
-  Person.findOne({ email: ans.email }, function (err, results) {
-    console.log(results);
-    if (!results) {
-      console.log("your email is nt registered with us ");
-      res.send("email not there");
-    } else if (results.password != ans.password) {
-      console.log("you have enetered a wrong password");
-      res.send("password is wrong");
-    } else {
-      res.redirect("/donorreceiverpage");
-    }
-  });
-});
+// ??
+// app.get("/delete/:email", function (req, res) {
+//   const email = req.params.email;
+//   Person.findOneAndRemove({ email: email }, function (err) {
+//     Donor.findOneAndRemove({ emailAdress: email }, function (err) {
+//       Otp.findOneAndRemove({ email: email }, function (err) {
+//         res.send("wiped out everything");
+//       });
+//     });
+//   });
+// });
 
-app.get("/delete/:email", function (req, res) {
-  const email = req.params.email;
-  Person.findOneAndRemove({ email: email }, function (err) {
-    Donor.findOneAndRemove({ emailAdress: email }, function (err) {
-      Otp.findOneAndRemove({ email: email }, function (err) {
-        res.send("wiped out everything");
-      });
-    });
-  });
-});
-
+// sign-up page
 app.get("/signup", function (req, res) {
   res.render("signup");
 });
 
-var check = 1;
+// Successfull Sign-up page
+app.get("/successfulSignUp", function (req, res) {
+  res.render("signinAfterSignupPage", {
+    pageTitle: "Sign In Page",
+  });
+});
+
+// ??
+app.get("/donorreceiverpage", function (req, res) {
+  Otp.deleteMany({}, function (err) {
+    res.render("donorReceiverPage", {
+      pageTitle: "welcome",
+    });
+  });
+});
+
+// about US
+app.get("/aboutus", function (req, res) {
+  res.render("aboutus", {
+    pageTitle: "about us",
+  });
+});
+app.get("/homeAfterSignIn", function (req, res) {
+  if (currentUser == null) {
+    alert("Please Sign In first");
+    res.redirect("/signin");
+  } else {
+    res.render("homeAfterSignIn", {
+      username: "Hi, " + currentUser.username,
+      pageTitle: "Home",
+    });
+  }
+});
+
+// donor list
+// app.get("/donorlist", function (req, res) {
+//   Donor.find({}, function (err, results) {
+//     if (!err) {
+//       res.render("donorlist0", {
+//         pageTitle: "donor list",
+//         results: results,
+//       });
+//     }
+//   });
+// });
+
+// post requests
+// Sign In
+var currentUser = null;
+app.post("/signin", function (req, res) {
+  const ans = req.body;
+  console.log(ans);
+  User.findOne({ emailAddress: ans.email }, function (err, results) {
+    if (!results) {
+      alert("E-Mail not Found");
+      res.redirect("/signin");
+    } else if (results.password != ans.password) {
+      alert("Incorrect Password");
+      res.redirect("/signin");
+    } else {
+      currentUser = results;
+      console.log(currentUser);
+      res.redirect("/homeAfterSignIn");
+    }
+  });
+});
+
+// Sign up
 app.post("/signup", function (req, res) {
   const ans = req.body;
   console.log(ans);
@@ -194,7 +246,7 @@ console.log(check);
   var valid = 1;
 
   if (valid == 1) {
-    Person.findOne({ username: ans.user_name }, function (err, results) {
+    User.findOne({ username: ans.user_name }, function (err, results) {
       if (results) {
         valid = 0;
         alert(
@@ -203,13 +255,13 @@ console.log(check);
         );
         res.redirect("/signup");
       } else if (valid === 1) {
-        Donor.findOne({ emailAdress: ans.email }, function (err, result) {
+        User.findOne({ emailAddress: ans.email }, function (err, result) {
           if (result) {
             valid = 0;
             alert("email is already in use", valid);
             res.redirect("/signup");
           } else {
-            Donor.findOne({ contactNo: ans.contact_no }, function (
+            User.findOne({ contactNumber: ans.contact_no }, function (
               err,
               result
             ) {
@@ -230,25 +282,20 @@ console.log(check);
                 res.redirect("/signup");
               } else {
                 //**********getting all the info from the user to be fed to the database after verifying*****
-                const donorNew = new Donor({
+                const newUser = new User({
                   name: ans.first_name + " " + ans.last_name,
-                  contactNo: ans.contact_no,
                   bloodGroup: ans.bloodGroup,
                   gender: ans.gender,
                   dateOfBirth: ans.dob,
-                  emailAdress: ans.email,
+                  username: ans.user_name,
+                  emailAddress: ans.email,
+                  password: ans.user_password,
+                  contactNumber: ans.contact_no,
                   city: ans.city,
                   state: ans.state,
                   pin: ans.pin,
                 });
-                donorNew.save();
-                const newPerson = new Person({
-                  details: donorNew,
-                  email: ans.email,
-                  username: ans.user_name,
-                  password: ans.user_password,
-                });
-                newPerson.save();
+                newUser.save();
                 // const randOtp1 = Math.floor(1000 + Math.random() * 9000);
 
                 //   client.messages
@@ -286,7 +333,7 @@ console.log(check);
 
                 //   res.redirect("/otp");
               }
-              res.redirect("/aaa");
+              res.redirect("/successfulSignUp");
               /*
                 else {
 
@@ -361,38 +408,11 @@ console.log(check);
 //   });
 // });
 
-app.get("/aaa", function (req, res) {
-  res.render("signinAfterSignupPage", {
-    pageTitle: "Sign In Page",
-  });
-});
 // app.get("/aa",function(req,res){
 //   res.render("donorReceiverPage",{
 //     pageTitle:"welcome"
 //   });
 // });
-app.get("/donorreceiverpage", function (req, res) {
-  Otp.deleteMany({}, function (err) {
-    res.render("donorReceiverPage", {
-      pageTitle: "welcome",
-    });
-  });
-});
-app.get("/aboutus", function (req, res) {
-  res.render("aboutus", {
-    pageTitle: "about us",
-  });
-});
-app.get("/donorlist", function (req, res) {
-  Donor.find({}, function (err, results) {
-    if (!err) {
-      res.render("donorlist0", {
-        pageTitle: "donor list",
-        results: results,
-      });
-    }
-  });
-});
 
 app.listen(process.env.PORT || 3000, function () {
   console.log("working on port 3000");
