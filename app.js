@@ -182,16 +182,37 @@ app.get("/becomeAReceiver", (req, res) => {
     });
   }
 });
-
+var receiverBloodGroup = null;
 // donor list
 app.get("/donorList", function (req, res) {
   Donor.find(
-    { "details.bloodGroup": currentUser.bloodGroup },
+    {
+      "details.bloodGroup": receiverBloodGroup,
+      "details.state": currentUser.state,
+    },
     function (err, results) {
       if (!err) {
         console.log(results);
-        res.render("donorsList", {
+        res.render("List", {
           pageTitle: "donor list",
+          results: results,
+          username: currentUser.username,
+        });
+      }
+    }
+  );
+});
+app.get("/receiverList", (req, res) => {
+  Receiver.find(
+    {
+      "details.bloodGroup": currentUser.bloodGroup,
+      "details.state": currentUser.state,
+    },
+    function (err, results) {
+      if (!err) {
+        console.log(results);
+        res.render("List", {
+          pageTitle: "Receiver's List",
           results: results,
         });
       }
@@ -451,12 +472,13 @@ app.post("/becomeADonor", (req, res) => {
 });
 
 app.post("/becomeAReceiver", (req, res) => {
+  receiverBloodGroup = req.body.bloodGroup;
   const newReceiver = new Receiver({
     details: currentUser,
     bloodGroup: req.body.bloodGroup,
   });
   newReceiver.save();
-  res.redirect("/homeAfterSignIn");
+  res.redirect("/donorList");
 });
 
 app.listen(process.env.PORT || 3000, function () {
