@@ -53,6 +53,7 @@ const donorSchema = {
 const Donor = mongoose.model("Donor", donorSchema);
 const receiverSchema = {
   details: userSchema,
+  bloodGroup: String,
 };
 const Receiver = mongoose.model("Receiver", receiverSchema);
 const otpSchema = {
@@ -96,6 +97,7 @@ const donor1=new Donor({
 // GET Request
 // Home
 app.get("/", function (req, res) {
+  currentUser = null;
   res.render("home", {
     pageTitle: "home page",
   });
@@ -153,23 +155,49 @@ app.get("/homeAfterSignIn", function (req, res) {
     res.redirect("/signin");
   } else {
     res.render("homeAfterSignIn", {
-      username: "Hi, " + currentUser.username,
+      username: currentUser.username,
       pageTitle: "Home",
+    });
+  }
+});
+app.get("/becomeADonor", (req, res) => {
+  if (currentUser == null) {
+    alert("Please Sign In first");
+    res.redirect("/signin");
+  } else {
+    res.render("becomeADonor", {
+      username: currentUser.username,
+      pageTitle: "Become A Donor",
+    });
+  }
+});
+app.get("/becomeAReceiver", (req, res) => {
+  if (currentUser == null) {
+    alert("Please Sign In first");
+    res.redirect("/signin");
+  } else {
+    res.render("becomeAReceiver", {
+      username: currentUser.username,
+      pageTitle: "Become A Receiver",
     });
   }
 });
 
 // donor list
-// app.get("/donorlist", function (req, res) {
-//   Donor.find({}, function (err, results) {
-//     if (!err) {
-//       res.render("donorlist0", {
-//         pageTitle: "donor list",
-//         results: results,
-//       });
-//     }
-//   });
-// });
+app.get("/donorList", function (req, res) {
+  Donor.find(
+    { "details.bloodGroup": currentUser.bloodGroup },
+    function (err, results) {
+      if (!err) {
+        console.log(results);
+        res.render("donorsList", {
+          pageTitle: "donor list",
+          results: results,
+        });
+      }
+    }
+  );
+});
 
 // post requests
 // Sign In
@@ -261,80 +289,79 @@ console.log(check);
             alert("email is already in use", valid);
             res.redirect("/signup");
           } else {
-            User.findOne({ contactNumber: ans.contact_no }, function (
-              err,
-              result
-            ) {
-              if (result) {
-                valid = 0;
-                alert("phone no is already in use", valid);
-                res.redirect("/signup");
-              } else if (valid === 1 && getAge(ans.dob) <= 12) {
-                valid = 0;
-                alert("you must be older than 12 sorry");
-                res.redirect("/signup");
-              } else if (
-                valid === 1 &&
-                ans.user_password != ans.confirm_password
-              ) {
-                valid = 0;
-                alert("passwords dont match");
-                res.redirect("/signup");
-              } else {
-                //**********getting all the info from the user to be fed to the database after verifying*****
-                const newUser = new User({
-                  name: ans.first_name + " " + ans.last_name,
-                  bloodGroup: ans.bloodGroup,
-                  gender: ans.gender,
-                  dateOfBirth: ans.dob,
-                  username: ans.user_name,
-                  emailAddress: ans.email,
-                  password: ans.user_password,
-                  contactNumber: ans.contact_no,
-                  city: ans.city,
-                  state: ans.state,
-                  pin: ans.pin,
-                });
-                newUser.save();
-                // const randOtp1 = Math.floor(1000 + Math.random() * 9000);
+            User.findOne(
+              { contactNumber: ans.contact_no },
+              function (err, result) {
+                if (result) {
+                  valid = 0;
+                  alert("phone no is already in use", valid);
+                  res.redirect("/signup");
+                } else if (valid === 1 && getAge(ans.dob) <= 12) {
+                  valid = 0;
+                  alert("you must be older than 12 sorry");
+                  res.redirect("/signup");
+                } else if (
+                  valid === 1 &&
+                  ans.user_password != ans.confirm_password
+                ) {
+                  valid = 0;
+                  alert("passwords dont match");
+                  res.redirect("/signup");
+                } else {
+                  //**********getting all the info from the user to be fed to the database after verifying*****
+                  const newUser = new User({
+                    name: ans.first_name + " " + ans.last_name,
+                    bloodGroup: ans.bloodGroup,
+                    gender: ans.gender,
+                    dateOfBirth: ans.dob,
+                    username: ans.user_name,
+                    emailAddress: ans.email,
+                    password: ans.user_password,
+                    contactNumber: ans.contact_no,
+                    city: ans.city,
+                    state: ans.state,
+                    pin: ans.pin,
+                  });
+                  newUser.save();
+                  // const randOtp1 = Math.floor(1000 + Math.random() * 9000);
 
-                //   client.messages
-                //     .create({
-                //       body: "your otp is" + randOtp1,
-                //       from: "+19378216745",
-                //       to: "+91" + ans.contact_no,
-                //     })
-                //     .then((message) => console.log(message.sid));
+                  //   client.messages
+                  //     .create({
+                  //       body: "your otp is" + randOtp1,
+                  //       from: "+19378216745",
+                  //       to: "+91" + ans.contact_no,
+                  //     })
+                  //     .then((message) => console.log(message.sid));
 
-                //   const randotp2 = Math.floor(1000 + Math.random() * 9000);
+                  //   const randotp2 = Math.floor(1000 + Math.random() * 9000);
 
-                //   var mailOptions = {
-                //     from: "bloodforyou5@gmail.com",
-                //     to: ans.email,
-                //     subject: "We have your otp for verification",
-                //     text: "your Otp is " + randotp2,
-                //   };
+                  //   var mailOptions = {
+                  //     from: "bloodforyou5@gmail.com",
+                  //     to: ans.email,
+                  //     subject: "We have your otp for verification",
+                  //     text: "your Otp is " + randotp2,
+                  //   };
 
-                //   transporter.sendMail(mailOptions, function (error, info) {
-                //     if (error) {
-                //       console.log(error);
-                //     } else {
-                //       console.log("Email sent: " + info.response);
-                //     }
-                //   });
+                  //   transporter.sendMail(mailOptions, function (error, info) {
+                  //     if (error) {
+                  //       console.log(error);
+                  //     } else {
+                  //       console.log("Email sent: " + info.response);
+                  //     }
+                  //   });
 
-                //   const newOtp = new Otp({
-                //     phoneNo: ans.contact_no,
-                //     otpPhone: randOtp1,
-                //     email: ans.email,
-                //     otpEmail: randotp2,
-                //   });
-                //   newOtp.save();
+                  //   const newOtp = new Otp({
+                  //     phoneNo: ans.contact_no,
+                  //     otpPhone: randOtp1,
+                  //     email: ans.email,
+                  //     otpEmail: randotp2,
+                  //   });
+                  //   newOtp.save();
 
-                //   res.redirect("/otp");
-              }
-              res.redirect("/successfulSignUp");
-              /*
+                  //   res.redirect("/otp");
+                }
+                res.redirect("/successfulSignUp");
+                /*
                 else {
 
                    let sex;
@@ -368,7 +395,8 @@ console.log(check);
                    });
                  }
                  */
-            });
+              }
+            );
           }
         });
       }
@@ -413,6 +441,23 @@ console.log(check);
 //     pageTitle:"welcome"
 //   });
 // });
+app.post("/becomeADonor", (req, res) => {
+  const newDonor = new Donor({
+    details: currentUser,
+  });
+  newDonor.save();
+  alert("Congratulations on Becoming A Donor !!!");
+  res.redirect("/homeAfterSignIn");
+});
+
+app.post("/becomeAReceiver", (req, res) => {
+  const newReceiver = new Receiver({
+    details: currentUser,
+    bloodGroup: req.body.bloodGroup,
+  });
+  newReceiver.save();
+  res.redirect("/homeAfterSignIn");
+});
 
 app.listen(process.env.PORT || 3000, function () {
   console.log("working on port 3000");
